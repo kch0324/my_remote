@@ -31,3 +31,27 @@ for tc in range(1, T + 1):
     if max_v < 2:    # 길이가 2 미만인 경우 0을 출력
         max_v = 0
     print(f"#{tc} {max_v}")
+##############################################################################################################
+dy = [0, 1] # 우, 하
+dx = [1, 0]
+
+T = int(input())
+for tc in range(1, T + 1):
+    N, M = map(int, input().split()) # N x M 행렬
+    arr = [list(map(int, input().split())) for _ in range(N)]
+    max_cnt = 0
+
+    for y in range(N): # 행순회 하다가
+        for x in range(M):
+            if arr[y][x] == 1: # 1인 지점을 발견
+                for i in range(2):
+                    cnt = 1 # 현재 좌표부터 카운팅
+                    ny, nx = y + dy[i], x + dx[i] # 우, 하
+                    while 0 <= ny < N and 0 <= nx < M and arr[ny][nx] == 1:
+                        cnt += 1
+                        ny += dy[i] # 좌표 이동
+                        nx += dx[i]
+                    if cnt >= 2: # 최소 길이가 2이상인 경우만 고려
+                        max_cnt = max(max_cnt, cnt)
+
+    print(f'#{tc} {max_cnt}')
