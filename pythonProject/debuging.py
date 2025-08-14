@@ -1,3 +1,6 @@
+# 방법 1: 무향 그래프, 방법 2: 4방향 델타 스택
+
+
 # 상하좌우 델타로 주변 좌표 접근 -> 0이면 진행
 # 진행 한 곳 좌표를 stack에 push
 # 길이 막히면 stack 을 pop해서 갈림길로 돌아감
@@ -23,11 +26,6 @@ for tc in range(1, T + 1):
     # 상하좌우 델타로 각 정점들의 간선에 접근
     for i in range(N):
         for j in range(N):
-            # 2와 3의 값을 가진 좌표를 찾으면 s, g에 할당
-            if arr[i][j] == 2:
-                s = (i, j)
-            if arr[i][j] == 3:
-                g = (i, j)
             for p in range(4):
                 Di = i + Dr[p]
                 Dj = j + Dc[p]
@@ -36,7 +34,10 @@ for tc in range(1, T + 1):
                         u, v = (i, j), (Di, Dj)     # 좌표를 정점으로 인접 정점들 그래프에 무형 간선 할당
                         graph[u].append(v)
                         graph[v].append(u)
-                else:
-                    continue
+    print(f"#{tc} {backtracking(2, 3)}")
 
-    print(f"#{tc} {backtracking(s, g)}")
+
+
+
+
+
