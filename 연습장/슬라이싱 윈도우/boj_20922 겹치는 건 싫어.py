@@ -16,3 +16,26 @@ for r in range(N):
     max_length = max(max_length, r - l + 1)
 
 print(max_length)
+
+##################################################################################
+
+N, K = map(int, input().split())
+lst = list(map(int, input().split()))
+
+# 같은 원소가 K개 이하로 들어 있는 최장 수열의 길이
+temp = {}
+left = length = 0
+
+for right in range(N):
+    if lst[right] not in temp:
+        temp[lst[right]] = 1
+    else:
+        temp[lst[right]] += 1
+
+    while temp[lst[right]] > K:
+        temp[lst[left]] -= 1
+        left += 1
+
+    length = max(length, right - left + 1)
+
+print(length)
