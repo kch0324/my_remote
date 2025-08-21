@@ -25,3 +25,15 @@ for tc in range(1, T + 1):
             num = dequeue()
             enqueue(num - a)
     print(Q)
+
+
+enqueue(v)
+visited = {}
+visited[v] = 1
+while Q:
+    k = dequeue()
+    if k not in visited:
+        visited.add(k)
+        for i in graph[k]:
+            enqueue((i))
+            visited[i] = visited[k] + 1
