@@ -35,7 +35,7 @@ N = int(input())
 M = int(input())
 arr = list(map(int, input().split()))
 N += 1
-Q = [0] * N     # 원형 큐
+Q = [None] * N     # 원형 큐
 c_arr = [0] * 101   # 추천 카운팅 배열
 
 def enqueue(item):
@@ -49,25 +49,33 @@ def dequeue():
     global head
     if tail == head:
         return
+      # 디버깅용 head위치 확인
     head = (head + 1) % N
-    return Q[head]
+    result = Q[head]
+    Q[head] = None # Q에서 head의 요소를 제거(디버깅용) 
+    return result
 
 head = tail = 0
 i = 0
-while i < M:
+while True:
+    while i < M and c_arr[arr[i]] == 0 and (tail + 1) % N != head:   # 새로운 학생 추천이면 큐가 비어있을때 enqueue 하고 카운팅 배열을 + 1
+        enqueue(arr[i])
+        c_arr[arr[i]] += 1
+        i += 1
     if c_arr[arr[i]] != 0:  # 이미 해당 학생이 추천받은 상태면 추천수만 + 1
         c_arr[arr[i]] += 1
         i += 1
-    else:
-        while (tail + 1) % N != head:   # 새로운 학생 추천이면 큐가 비어있을때 enqueue 하고 카운팅 배열을 + 1
-            enqueue(arr[i])
-            c_arr[arr[i]] += 1
-            i += 1
-    num = dequeue()
-    if c_arr[num] == min([x for x in c_arr if x != 0]):    # 해당 학생이 추천 수가 0이 아닌 것중 가장 적다면 그대로 dequeue
-        c_arr[num] -= 0
-    else:   # 아니라면 다시 enqueue
-        enqueue(num)
+    
+    if i == M:
+        break
+    
+    else: # 해당 학생이 추천 수가 0이 아닌 것중 가장 적다면 dequeue
+        num = dequeue()
+        if c_arr[num] == min([x for x in c_arr if x != 0]):    
+            c_arr[num] = 0
+        else:   # 아니라면 다시 enqueue
+            enqueue(num)
 
-result = sorted(list(set(Q)))   # 원형 큐 특성상 중복된 값이 있으므로 없애서 정렬
+Q.pop(head)
+result = sorted(Q)
 print(*result)
