@@ -34,48 +34,29 @@
 N = int(input())
 M = int(input())
 arr = list(map(int, input().split()))
-N += 1
-Q = [None] * N     # 원형 큐
+pic = []    # 사진 틀: 빈 리스트
+t_arr = [0] * 101   # 시간 카운팅 배열
 c_arr = [0] * 101   # 추천 카운팅 배열
 
-def enqueue(item):
-    global tail
-    if (tail + 1) % N == head:
-        return
-    tail = (tail + 1) % N
-    Q[tail] = item
-
-def dequeue():
-    global head
-    if tail == head:
-        return
-      # 디버깅용 head위치 확인
-    head = (head + 1) % N
-    result = Q[head]
-    Q[head] = None # Q에서 head의 요소를 제거(디버깅용) 
-    return result
-
-head = tail = 0
-i = 0
-while True:
-    while i < M and c_arr[arr[i]] == 0 and (tail + 1) % N != head:   # 새로운 학생 추천이면 큐가 비어있을때 enqueue 하고 카운팅 배열을 + 1
-        enqueue(arr[i])
+for i in range(M):  # M번의 추천동안
+    if arr[i] in pic:   # 사진 틀 안에 추천학생이 있다면 추천만 + 1
         c_arr[arr[i]] += 1
-        i += 1
-    if c_arr[arr[i]] != 0:  # 이미 해당 학생이 추천받은 상태면 추천수만 + 1
-        c_arr[arr[i]] += 1
-        i += 1
-    
-    if i == M:
-        break
-    
-    else: # 해당 학생이 추천 수가 0이 아닌 것중 가장 적다면 dequeue
-        num = dequeue()
-        if c_arr[num] == min([x for x in c_arr if x != 0]):    
-            c_arr[num] = 0
-        else:   # 아니라면 다시 enqueue
-            enqueue(num)
+    elif len(pic) < N:  # 새로운 추천 학생이지만 사진 틀에 남은 자리가 있다면
+        pic.append(arr[i])  # 사진틀에 추가
+        t_arr[arr[i]] = i   # 해당 학생 추천받은 시간 기입
+        c_arr[arr[i]] = 1   # 해당 학생 추천수 + 1
+    else:   # 새로운 추천 학생인데 사진 틀에 자리도 없다면: 추천이 제일 낮고 시간이 제일 낮은 학생 삭제 후 / 새로운 학생 사진틀에 추가
+        erase = pic[0]
+        for j in pic:
+            if c_arr[erase] > c_arr[j]:
+                erase = j
+            elif c_arr[erase] == c_arr[j] and t_arr[erase] > t_arr[j]:
+                erase = j
+        pic.remove(erase)
 
-Q.pop(head)
-result = sorted(Q)
-print(*result)
+        pic.append(arr[i])  # 새로운 학생 사진틀에 추가
+        t_arr[arr[i]] = i   # 해당 학생 추천받은 시간 기입
+        c_arr[arr[i]] = 1   # 해당 학생 추천수 + 1
+
+pic.sort()
+print(*pic)
