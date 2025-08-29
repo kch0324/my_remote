@@ -1,56 +1,61 @@
-# 중간고사 채점
-'''
-[문제]
-이번 중간고사에는 총 N문제가 나왔고, 응시한 사람의 수는 M명이다. 각 문제의 배점과 각 사람의 
-결과가 주어졌을 때, 가장 높은 점수를 획득한 사람을 구하는 프로그램을 작성하시오.
+import copy
+def get_min(arr, i, N, M, K, ch):
+    global min_v, cnt
+    cnt += 1
+    if i == N:  # 끝까지 돌경우 종료
+        return
+    if min_v <= cnt:    # 가지치기 종료
+        return
+    for ii in range(i, N):  # 약품 투입
+        for j in range(M):
+            arr[ii][j] = ch
 
-[입력]
-첫째 줄에 문제의 개수 N과 응시자의 수 M이 주어진다. (1 ≤ N ≤ 100, 1 ≤ M ≤ 100)
+        for c in range(M):  # 열우선 순회 중첩 탐색
+            stack = [arr[0][c]]
+            for r in range(1, N):
+                if len(stack) == K:     # 열에 K개이상 중첩되면 break
+                    break
+                node = stack.pop()
+                if node == arr[r][c]:
+                    stack.append(node)
+                    stack.append(arr[r][c])
+                else:
+                    stack.clear()
+                    stack.append(arr[r][c])
+            if len(stack) != K:     # 끝까지 돌았는데 열에 K개만큼 중첩이 없으면 탐색중지
+                break
+        else:   # 모든 열에 K개 중첩을 찾으면 min_v 갱신 후 종료
+            min_v = min(min_v, cnt)
+            return
+        get_min(arr, i + 1, N, M, K, 1)
+        get_min(arr, i + 1, N, M, K, 0)
 
-둘째 줄에는 문제의 배점이 1번 문제부터 N번 문제까지 순서대로 주어진다. 각 문제의 배점은 100보다 
-작거나 같은 자연수이며, 공백으로 구분되어져 있다.
+T = int(input())
+for tc in range(1, T + 1):
+    D, W, K = map(int, input().split())    # D: 두께(N), W: 가로크기(M), K: 합격기준
+    arr = [list(map(int, input().split())) for _ in range(D)]
+    arr2 = copy.deepcopy(arr)
+    min_v = float('inf')
 
-셋째 줄부터 M개의 줄에는 응시자의 정보가 한 줄에 하나씩 주어진다. 응시자의 정보는 총 N+1개의 문자열로 
-이루어져 있다. 첫 번째 문자열은 응시자의 수험 번호이다. 수험 번호는 100,000보다 작거나 같은 자연수이다. 
-두 번째 부터 N+1번째 문자열은 각 시험 문제의 채점 결과이다. 채점 결과는 1번 문제부터 N번 문제까지 
-순서대로 주어지며, 'O' 또는 'X'이다. 'O'가 주어진 경우에는 해당 문제를 맞춘 것이고, 
-'X'가 주어진 경우에는 해당 문제를 틀린 것이다.
+    for c in range(W):  # 열우선 순회 중첩 탐색
+        stack = [arr[0][c]]
+        for r in range(1, D):
+            if len(stack) == K:  # 열에 K개이상 중첩되면 break
+                break
+            node = stack.pop()
+            if node == arr[r][c]:
+                stack.append(node)
+                stack.append(arr[r][c])
+            else:
+                stack.clear()
+                stack.append(arr[r][c])
+        if len(stack) != K:  # 끝까지 돌았는데 열에 K개만큼 중첩이 없으면 탐색중지
+            break
+    else:  # 모든 열에 K개 중첩을 찾으면 min_v 갱신 후 종료
+        min_v = 0
 
-문제를 맞춘 경우에는 그 문제의 배점이 점수에 더해지게 되며, 틀린 경우에는 더해지지 않는다. 
-수험 번호가 중복되는 경우는 없다.
-
-[출력]
-첫째 줄에 가장 높은 점수를 얻은 학생의 번호와 점수를 공백으로 구분해 출력한다. 
-만약, 가장 높은 점수를 얻은 학생이 여러 명이라면, 수험 번호가 가장 작은 것을 출력한다.
-
-[예제 입력 2] 
-4 8
-10 20 30 40
-1 O X X X
-2 X O X X
-3 X X O X
-4 X X X O
-80 O O O O
-70 O O O O
-60 O O O O
-50 O O O O
-[예제 출력 2] 
-50 100
-'''
-
-N, M = map(int, input().split())    # N: 문제 수, M: 응시자 수
-score = list(map(int,input().split()))     # score: 배점을 나타내는 리스트 / 인덱스가 문제 번호 (0 ~ N-1)
-max_s = 0
-max_num = 1
-for _ in range(M):
-    info = list(input().split())    # info: 학생 정보를 리스트로 받음 ['1', 'O', 'X', 'X', 'X']
-    num = info.pop(0)   # 학생번호와 채점결과를 분리
-    s = 0
-    for i in range(N):
-        if info[i] == 'O':
-            s += score[i]
-    if max_s < s:
-        max_s = s; max_num = num
-    elif max_s == s and int(max_num) > int(num):  # 성적이 둘다 max일 경우 학생 번호가 작은것을 선택
-        max_num = num
-print(f"{max_num} {max_s}")
+    cnt = 0
+    get_min(arr, 0, D, W, K, 1)
+    cnt = 0
+    get_min(arr2, 0, D, W, K, 0)
+    print(f"#{tc} {min_v}")

@@ -1,30 +1,29 @@
-# 한번 탐색할때 cnt += 1
-# N/2번째 탐색의 안에 든 값: cnt == N//2 이 될때 result에 cnt저장, 루트안에 든 값도 마찬가지
+# 중위 순회로 하면 1 ~ N 트리 삽입 가능
 
 T = int(input())
 for tc in range(1, T + 1):
     N = int(input())    # N: 노드의 개수
 
-    lv = [0] * (N + 1)
-    rv = [0] * (N + 1)
+    left = [0] * (N + 1)
+    right = [0] * (N + 1)
+    val = [0] * (N + 1)
     for i in range(1, N + 1):
         if i*2 <= N:
-            lv[i] = i*2
+            left[i] = i*2
         if i*2 + 1 <= N:
-            rv[i] = i*2 +1
+            right[i] = i*2 +1
 
-    cnt = 0
-    def get_num(v):
-        global cnt
+    i = 1
+    def make_tree(v):   # 중위 순회
+        global i
         if v == 0:
             return
-        get_num(lv[v])
-        cnt += 1
-        get_num(rv[v])
+        while v:   # 자식이 없을때까지 내려가고 제일 아래부터 순서대로 삽입
+            make_tree(left[v])
+            val[v] = i
+            i += 1
+            make_tree(right[v])
+            return
 
-    get_num(1)
-    result1 = cnt
-    cnt = 0
-    get_num(N//2)
-    result2 = cnt
-    print(f"#{tc} {result1} {result2}")
+    make_tree(1)
+    print(f"#{tc} {val[1]} {val[N // 2]}")
