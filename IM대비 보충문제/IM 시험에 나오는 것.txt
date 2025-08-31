@@ -17,7 +17,7 @@ im시험에 나오는 것 (오늘까지 배운 stirng 시험 범위 내)
 1. 2차원 리스트 (델타 배열 등)
    상하좌우, 대각선방향
    + continue, break 잘써야한다
-   + while break (ex) 좌표 끝까지 이동해야한다)
+   + while break (ex) 좌표 끝까지 이동해야한다
 
 2. string (Parsing 문제)
    많이쓰는 메서드 : find 메서드 - 디버깅에서 어렵게
