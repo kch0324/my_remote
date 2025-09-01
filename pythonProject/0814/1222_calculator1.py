@@ -24,11 +24,11 @@ for tc in range(1, 11):
 
     stack = []
     for token in postfix:
-        if type(token) == int:  # 숫자면 스택에 푸시
+        if type(token) == int:
             stack.append(token)
         else:
             if token == '+':
                 result = stack.pop() + stack.pop() 
                 stack.append(result)
 
-    print(f"{tc} {stack.pop()}")
+    print(f"#{tc} {stack.pop()}")
