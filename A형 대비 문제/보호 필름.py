@@ -1,4 +1,5 @@
-def DFS(i, D, W, K, arr, cnt):   # i: 시행횟수(재귀횟수), D: D까지 재귀(두께), W: 가로크기, K: 합격기준, arr: 배열
+# i: 행(재귀횟수), D: D까지 재귀(두께), W: 가로크기, K: 합격기준, arr: 배열, cnt: 약품 투입횟수
+def DFS(i, D, W, K, arr, cnt):
     global min_v
     if check(arr, D, W, K):  # 합격기준 달성했는지 확인후 최소 시행횟수 갱신
         min_v = min(min_v, cnt)
