@@ -26,6 +26,7 @@ def prim(start):
         for v, w in graph[u]:
             if v in visited or dist[v] <= w:
                 continue
+            dist[v] = w
             heappush(pq, (w, v))
     return min_w
 
